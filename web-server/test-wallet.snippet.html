@@ -1,0 +1,14 @@
+<script type="module">
+  import endpoints, { WalletMode } from './paimaMiddleware.js';
+  const info =
+  {
+    mode: WalletMode.Cardano,
+    preferBatchedMode: false,
+    preference: { name: "godot_wallet" }
+    // preference: { name: "nami" }
+  }
+  const wallet = await endpoints.userWalletLogin(info);
+</script>
+
+
+var ret = entryFunction(argc, argv);
