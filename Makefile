@@ -9,7 +9,7 @@ init:
 	cd open-world && npm run initialize && npm install && npm run pack && npm run pack:middleware
 
 init-batcher:
-	./paima-engine batcher
+	./paima-engine batcher && sudo chmod +x ./batcher/start.sh
 
 distribute-middleware-and-helper-scripts:
 	cp ./open-world/middleware/packaged/middleware.js ./godot-cip-30-prototype/extra-resources/paima/paimaMiddleware.js \

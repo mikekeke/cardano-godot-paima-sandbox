@@ -21,8 +21,16 @@ From fresh repo proceed with following steps:
    1. Copy or link to root paima engine as `paima-engine` (repo was tested with `paima-engine-linux-2.3.0`)
    2. `nix develop`
    3. `make init` (goes through initialization process according to the [open-world-readme](./open-world/README.md); tested in Linux,some extra flags are required for macOS, see the readme; if there is some "red" messages about vulnerabilities it should be ok, but no other errors should appear; initialization was done already for this project, but it won't hurt to run it again)
-   4. `make init-batcher`
+   4. `make init-batcher` (will require root access to make `start.sh` executable)
    5. ⚠️ (batcher issues) Got to `open-world/middleware/packaged/middleware.js` and change `var batcherUri = ENV.BATCHER_URI` to `var batcherUri = "http://localhost:3340"`
+
+      If this step is missed you'll see error when running website:
+
+      ```shell
+      [submitToBatcher] error: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+
+      ```
+
    6. Open `godot-cip-30-prototype` in Godot editor and do web export (proper config should be set already, but just in case export is expected to be in `web-server/godot-web-export`, `Custom HTML shell` should point to `res://extra-resources/index.html`, `Extensions Support` should be checked)
    7. `make distribute-middleware-and-helper-scripts`
 2. Start required services
