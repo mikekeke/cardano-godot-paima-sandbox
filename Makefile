@@ -8,6 +8,9 @@ original-frontend-website:
 init:
 	cd open-world && npm run initialize && npm install && npm run pack && npm run pack:middleware
 
+init-batcher:
+	./paima-engine batcher
+
 distribute-middleware-and-helper-scripts:
 	cp ./open-world/middleware/packaged/middleware.js ./godot-cip-30-prototype/extra-resources/paima/paimaMiddleware.js \
 	&& cp ./open-world/middleware/packaged/middleware.js ./open-world/frontend/paimaMiddleware.js \
@@ -26,7 +29,7 @@ reset-db:
 	cd open-world && npm run database:reset
 
 start-paima-node:
-	NETWORK=localhost ./paima-engine-linux run
+	NETWORK=localhost ./paima-engine run
 
 start-batcher:
 	cd batcher && NETWORK=localhost ./start.sh

@@ -17,19 +17,24 @@ Paima setup requires Docker.
 
 From fresh repo proceed with following steps:
 
-1. `nix develop`
-2. `make init` (goes through initialization process according to the [open-world-readme](./open-world/README.md); tested in Linux,some extra flags are required for macOS, see the readme; if there is some "red" messages about vulnerabilities it should be ok, but no other errors should appear; initialization was done already for this project, but it won't hurt to run it again)
-3. ⚠️ (batcher issues) Got to `open-world/middleware/packaged/middleware.js` and change `var batcherUri = ENV.BATCHER_URI` to `var batcherUri = "http://localhost:3340"`
-4. `make distribute-middleware-and-helper-scripts`
-5. `make start-db` (will keep running in  terminal)
-6. `make start-chain` (will keep running in  terminal)
-7. `make deploy-contracts`
-8. `make start-paima-node` (will keep running in  terminal)
-9. `make start-batcher` (will keep running in  terminal)
+1. Init things
+   1. Copy or link to root paima engine as `paima-engine` (repo was tested with `paima-engine-linux-2.3.0`)
+   2. `nix develop`
+   3. `make init` (goes through initialization process according to the [open-world-readme](./open-world/README.md); tested in Linux,some extra flags are required for macOS, see the readme; if there is some "red" messages about vulnerabilities it should be ok, but no other errors should appear; initialization was done already for this project, but it won't hurt to run it again)
+   4. `make init-batcher`
+   5. ⚠️ (batcher issues) Got to `open-world/middleware/packaged/middleware.js` and change `var batcherUri = ENV.BATCHER_URI` to `var batcherUri = "http://localhost:3340"`
+   6. Open `godot-cip-30-prototype` in Godot editor and do web export (proper config should be set already, but just in case export is expected to be in `web-server/godot-web-export`, `Custom HTML shell` should point to `res://extra-resources/index.html`, `Extensions Support` should be checked)
+   7. `make distribute-middleware-and-helper-scripts`
+2. Start required services
+   1. `make start-db` (will keep running in  terminal)
+   2. `make start-chain` (will keep running in  terminal)
+   3. `make deploy-contracts`
+   4. `make start-paima-node` (will keep running in  terminal)
+   5. `make start-batcher` (will keep running in  terminal)
 
 None of these processes should report any errors.
 
-From here it is possible to either run original frontend for "open-world" game with `original-frontend-website` (http://localhost:8061/index.html) or run web-export of godot prototype with `godot-website` (http://localhost:8060/index.html).
+From here it is possible to either run original frontend for "open-world" game with `make original-frontend-website` (http://localhost:8061/index.html) or run web-export of godot prototype with `make godot-website` (http://localhost:8060/index.html).
 
 Godot prototype is currently very WIP, login button works by providing mock wallet address via CIP-30 interface. But making a move will fail to validate signature, as data was takes from Nami wallet and message that is being signed contains timestamp. Sot here is nop way really to mock `signData` for now.
 
