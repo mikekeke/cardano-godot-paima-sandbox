@@ -1,7 +1,7 @@
 // TODO: maybe it should be done from GDScript?
 function initCip30Godot() {
   window.cardano.godot = cip30Godot;
-  console.log("initCip30Godot done");
+  console.log('(move to GDScript?) JS: set CIP-30 Godot wallet to `window.cardano.godot`');
 }
 
 const cip30Godot = {
