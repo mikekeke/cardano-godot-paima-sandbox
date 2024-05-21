@@ -41,15 +41,14 @@ func init_cardano_wallet():
 	prints("GD: Godot wallet address hex: ", godot_wallet.single_address_wallet.get_address().to_hex())
 	_on_godot_wallet_ready()
 
-func init_buttons():
-	var buttons = Buttons.new(godot_wallet, window)
-	buttons.set_name("Buttons")
-	add_child(buttons)
-
 func _on_godot_wallet_ready():
 	init_buttons()
 	inject_cip_30_callbacks()
 
+func init_buttons():
+	var buttons = Buttons.new(godot_wallet, window)
+	buttons.set_name("Buttons")
+	add_child(buttons)
 
 # CIP-30 callbacks
 ## Adding to `window`
@@ -97,9 +96,6 @@ func _cb_sign_data(args):
 	signResult.key = sign_res.value._cose_key_hex()
 	signResult.signature = sign_res.value._cose_sig1_hex()
 	jsCallback.call("call", jsCallback.this, signResult)
-
-
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

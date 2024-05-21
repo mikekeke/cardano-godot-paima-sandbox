@@ -160,10 +160,53 @@
 		<div id="status-notice" class="godot" style="display: none;"></div>
 	</div>
 
+	<!-- Godot wallet callback wrappers -->
+	<script>
+		function initCip30Godot() {
+			window.cardano.godot = cip30Godot;
+			console.log('(move to GDScript?) JS: done setting CIP-30 Godot wallet to `window.cardano.godot`');
+		}
+
+		const cip30Godot = {
+			name: "godot",
+			icon: null,
+			enable: enableGodotCardano,
+			callbacks: new Object()
+
+		}
+
+		async function enableGodotCardano() {
+			console.log("JS: (enableGodotCardano) Enabling CIP-30 godot")
+			return cip30ApiGodot
+		}
+
+		const cip30ApiGodot = {
+			name: "godot",
+			getUsedAddresses: () => wrapCb(window.cardano.godot.callbacks.get_used_addresses),
+			getUnusedAddresses: () => wrapCb(window.cardano.godot.callbacks.get_unused_addresses),
+			signData: (address, message) => wrapSignCb(
+				window.cardano.godot.callbacks.sign_data,
+				address,
+				message
+			),
+		}
+
+		function wrapCb(cb) {
+			let { promise, resolve, reject } = Promise.withResolvers();
+			cb(resolve);
+			return promise;
+		}
+
+		function wrapSignCb(cb, address, message) {
+			let { promise, resolve, reject } = Promise.withResolvers();
+			cb(resolve, address, message);
+			return promise;
+		}
+	</script>
 	<script src="index.js"></script>
 	<script src="./paima/cip-30-godot.js"></script>
 	<script type="module">
-			console.log("RUNNING FROM DEBUG SHELL")
+		console.log("RUNNING FROM DEBUG SHELL")
 		import endpoints, { WalletMode } from './paima/paimaMiddleware.js';
 		console.log("endpoints: ", endpoints)
 
