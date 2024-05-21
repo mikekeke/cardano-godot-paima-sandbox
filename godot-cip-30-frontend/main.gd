@@ -81,18 +81,21 @@ func _cb_get_unused_addresses(args):
 	
 var cb_sign_data = JavaScriptBridge.create_callback(_cb_sign_data)
 func _cb_sign_data(args):
-	prints("GD running: _cb_sign_data")
+	prints("GD: _cb_sign_data")
 	
 	var jsCallback: JavaScriptObject = args[0] # todo: check not null
 	
-	var address = args[1]
-	var paylodadBytes = args[2]
-	prints("address: ", address)
-	prints("paylodadBytes: ", paylodadBytes)
+	var address = args[1] # TODO: check address mathces own address
+	var string_message = args[2] # TODO: should pass bytes here
+	prints("GD: address: ", address)
+	prints("GD: msg to sign: ", string_message)
+	var sign_res = godot_wallet.single_address_wallet.sign_data("", string_message.to_utf8_buffer())
+	prints("COSE key: ", sign_res.value._cose_key_hex())
+	prints("COSE sig1: ", sign_res.value._cose_sig1_hex())
 		
 	var signResult = JavaScriptBridge.create_object("Object")
-	signResult.key = "a4010103272006215820eafb118d61ccbd59a67d397640a3ed1fb0916cc21a5baabb1cbe8f4a7461bd3b"
-	signResult.signature = "ff"
+	signResult.key = sign_res.value._cose_key_hex()
+	signResult.signature = sign_res.value._cose_sig1_hex()
 	jsCallback.call("call", jsCallback.this, signResult)
 
 

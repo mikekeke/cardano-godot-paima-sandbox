@@ -13,7 +13,7 @@ const cip30Godot = {
 }
 
 async function enableGodotCardano() {
-  console.log("(enableGodotCardano) Enabling CIP-30 godot")
+  console.log("JS: (enableGodotCardano) Enabling CIP-30 godot")
   return cip30ApiGodot
 }
 
