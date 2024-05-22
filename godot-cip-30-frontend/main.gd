@@ -3,29 +3,29 @@ extends Node2D
 var window = JavaScriptBridge.get_interface("window")
 
 const seedphrase: String = "camp fly lazy street predict cousin pen science during nut hammer pool palace play vague divide tower option relax need clinic chapter common coast"
-const token: String = "previewCBfdRYkHbWOga1ah6TXgHODuhCBi8SQJ"
+const token: String = "mainnet8Gf1JxRjFsKJMXmK3B3uPYfnXRqKOydP"
 
 var loader
 var provider
 var godot_wallet
-var paima_middleware
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	print("WASM check")
 	print("test v3")
 	var tx_hash1 = _TransactionHash._from_hex("ff")
-	prints("Tx hash1: ", tx_hash1.is_ok())
+	prints("Tx hash1: ", tx_hash1.is_ok(), "should be ", false)
 	var tx_hash2 = _TransactionHash._from_hex("6cce5658b52a7dbaa369198e61746084a53f4a5c1a6f0cffe40f77db970d34b7")
-	prints("Tx hash2: ", tx_hash2.is_ok())
+	prints("Tx hash2: ", tx_hash2.is_ok(), " should be ", true)
 	print("WASM check end")
+	
 	init_cardano_wallet()
 
 func init_cardano_wallet():
 	print("GD: init_cardano_wallet")
 	loader = SingleAddressWalletLoader.new()
 	provider = BlockfrostProvider.new(
-		Provider.Network.PREVIEW,
+		Provider.Network.MAINNET,
 		token
 	)
 	add_child(loader)
@@ -54,7 +54,7 @@ func init_buttons():
 ## Adding to `window`
 func inject_cip_30_callbacks():
 	if !window:
-		print("GD: Window not doind - cant inject CIP-30 callbacks")
+		print("GD: Browser 'window' not found - skip injecting CIP-30 callbacks")
 		return
 	window.cardano.godot.callbacks.get_used_addresses = cb_get_used_addresses
 	window.cardano.godot.callbacks.get_unused_addresses = cb_get_unused_addresses
@@ -88,7 +88,7 @@ func _cb_sign_data(args):
 	var string_message = args[2] # TODO: should pass bytes here
 	prints("GD: address: ", address)
 	prints("GD: msg to sign: ", string_message)
-	var sign_res = godot_wallet.single_address_wallet.sign_data("", string_message.to_utf8_buffer())
+	var sign_res = godot_wallet.single_address_wallet.sign_data("", string_message)
 	prints("COSE key: ", sign_res.value._cose_key_hex())
 	prints("COSE sig1: ", sign_res.value._cose_sig1_hex())
 		
