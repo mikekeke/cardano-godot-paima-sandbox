@@ -78,7 +78,7 @@ func add_paima_game_buttons(window):
 	
 
 func test_step_right():
-	# TODO: unsafe - need to cjeck world boundaries
+	# TODO: unsafe - need to check world boundaries
 	_paima_middleware.submit_moves(_paima_middleware.get_x() + 1, 0)
 	
 	
@@ -95,13 +95,17 @@ func add_test_sign_button():
 func test_sing():
 	const test_data = "676f646f742d74657374"
 	prints("Signing known test data - hex of 'godot-test' string: ", test_data)
-	var sign_res = sign_data(test_data)
-	prints("Test sig res key: ", sign_res.value._cose_key_hex())
-	prints("Test sig res sig1: ", sign_res.value._cose_sig1_hex())
+	var signing_address = _godot_wallet.single_address_wallet.get_address().to_bech32()
+	var sign_res = sign_data(signing_address, test_data)
+	if sign_res.is_err():
+		prints("Failed to sign data: ", sign_res.error)
+		return
+	prints("Test sig COSE key: ", sign_res.value._cose_key_hex())
+	prints("Test sig COSE sig1: ", sign_res.value._cose_sig1_hex())
 
 # TODO: add address to be CIP-30 compliant
-func sign_data(pyload):
-	return _godot_wallet.single_address_wallet._sign_data("", pyload);
+func sign_data(signing_address, payload):
+	return _godot_wallet.single_address_wallet.sign_data("", signing_address, payload);
 
 var since_last_stats_refresh = 0 
 var stats_refresh_period = 3 # seconds
