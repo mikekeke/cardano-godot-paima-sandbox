@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no">
-	<title>cip-30-prototype</title>
+	<title>godot-cip-30-frontend</title>
 	<style>
 		body {
 			touch-action: none;
@@ -160,28 +160,64 @@
 		<div id="status-notice" class="godot" style="display: none;"></div>
 	</div>
 
-	<script src="index.js"></script>
-	<script src="./paima/cip-30-godot.js"></script>
-	<script type="module">
-		// <script>
-		import endpoints, { WalletMode } from './paima/paimaMiddleware.js';
-		console.log("endpoints: ", endpoints)
+	<!-- Godot wallet callback wrappers -->
+	<script>
+		function initCip30Godot() {
+			if (!window.cardano) {
+				window.cardano = new Object();
+			}
+			window.cardano.godot = cip30Godot;
+			console.log('(move to GDScript?) JS: done setting CIP-30 Godot wallet to `window.cardano.godot`');
+		}
 
+		const cip30Godot = {
+			name: "godot",
+			icon: null,
+			enable: enableGodotCardano,
+			callbacks: new Object()
+
+		}
+
+		async function enableGodotCardano() {
+			return cip30ApiGodot
+		}
+
+		const cip30ApiGodot = {
+			name: "godot",
+			getUsedAddresses: () => wrapCb(window.cardano.godot.callbacks.get_used_addresses),
+			getUnusedAddresses: () => wrapCb(window.cardano.godot.callbacks.get_unused_addresses),
+			signData: (address, message) => wrapSignCb(
+				window.cardano.godot.callbacks.sign_data,
+				address,
+				message
+			),
+		}
+
+		function wrapCb(cb) {
+			let { promise, resolve, reject } = Promise.withResolvers();
+			cb(resolve);
+			return promise;
+		}
+
+		function wrapSignCb(cb, address, message) {
+			let { promise, resolve, reject } = Promise.withResolvers();
+			cb(resolve, address, message);
+			return promise;
+		}
+	</script>
+	<script src="index.js"></script>
+	<script type="module">
+		// Setup Paima endpoints
+		import endpoints, { WalletMode } from './paima/paimaMiddleware.js';
 		window.paima = {
-			walletInfo: {
-				mode: WalletMode.Cardano,
-				preference: { name: "godot" },
-				preferBatchedMode: true,
-			},
 			endpoints: endpoints,
-			loginF: endpoints.userWalletLogin
 		};
 
-		console.log("Paima data: ", window.paima);
-		console.log("Starting from custom HTML");
-		console.log("Injecting CIP-30 Godot");
-		initCip30Godot()
-		const GODOT_CONFIG = { "args": [], "canvasResizePolicy": 2, "executable": "index", "experimentalVK": false, "fileSizes": { "index.pck": 6672, "index.wasm": 2866393 }, "focusCanvas": true, "gdextensionLibs": [] };
+		// Setup CIP-30 API for cardano-godot
+		initCip30Godot();
+
+		// Code from default Godot HTML shell (unchanged)
+		const GODOT_CONFIG = { "args": [], "canvasResizePolicy": 2, "executable": "index", "experimentalVK": false, "fileSizes": { "index.pck": 65872, "index.wasm": 2866393 }, "focusCanvas": true, "gdextensionLibs": ["csl_godot.wasm"] };
 		const engine = new Engine(GODOT_CONFIG);
 
 		(function () {

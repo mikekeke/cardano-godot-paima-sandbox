@@ -101,7 +101,7 @@ func test_sing():
 
 # TODO: add address to be CIP-30 compliant
 func sign_data(pyload):
-	return _godot_wallet.single_address_wallet.sign_data("", pyload);
+	return _godot_wallet.single_address_wallet._sign_data("", pyload);
 
 var since_last_stats_refresh = 0 
 var stats_refresh_period = 3 # seconds

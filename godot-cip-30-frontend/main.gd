@@ -30,7 +30,7 @@ func init_cardano_wallet():
 	)
 	add_child(loader)
 	add_child(provider)
-	var importRes = await loader.import_from_seedphrase_unthreaded(
+	var importRes = await loader.import_from_seedphrase_wo_new_thread(
 		seedphrase, "", "", 0, "Acc name", "Acc description"
 		)
 	if importRes.is_err():
